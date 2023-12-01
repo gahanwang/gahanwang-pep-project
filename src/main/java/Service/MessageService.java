@@ -17,6 +17,13 @@ public class MessageService {
     }
 
     public Message addMessage(Message msg) {
+        if (msg.getMessage_text().isEmpty()) {
+            System.out.println("Message cannot be blank");
+            return null;
+        } else if (msg.getMessage_text().length() > 254) {
+            System.out.println("Message has too many characters");
+            return null;
+        } 
         return msgDAO.add(msg);
     }
 
@@ -25,6 +32,9 @@ public class MessageService {
     }
 
     public Message getMessage(int id) {
+        if (msgDAO.getMessageByID(id) == null) {
+            System.out.println("Message does not exist");
+        } 
         return msgDAO.getMessageByID(id);
     }
 
@@ -32,8 +42,15 @@ public class MessageService {
         msgDAO.deleteMessageByID(id);
     }
 
-    public void updateMessage(Message msg, int id) {
-        msgDAO.updateMessageByID(msg, id);
+    public Message updateMessage(Message msg, int id) {
+        if (msg.getMessage_text().isEmpty()) {
+            System.out.println("Message cannot be empty");
+            return null;
+        } else if (msg.getMessage_text().length() > 254) {
+            System.out.println("Message has too many characters");
+            return null;
+        }
+        return msgDAO.updateMessageByID(msg, id);
     }
 
     public List<Message> getAllUserMessages(int accId) {

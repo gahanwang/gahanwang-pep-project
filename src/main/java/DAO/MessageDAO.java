@@ -73,16 +73,18 @@ public class MessageDAO {
         }
     }
 
-    public void updateMessageByID(Message msg, int id) {
+    public Message updateMessageByID(Message msg, int id) {
         try {
             String sql = "UPDATE message SET message_text = ? WHERE message_id = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, msg.getMessage_text());
             ps.setInt(2, id);
             ps.executeUpdate();
+            return msg;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        return null;
     }
 
     public List<Message> getAllMessagesByAccID(int accId) {

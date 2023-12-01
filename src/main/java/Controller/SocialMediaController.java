@@ -57,19 +57,11 @@ public class SocialMediaController {
     private void registerHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Account acc = mapper.readValue(ctx.body(), Account.class);
-        if (acc.getPassword().length() < 4) {
-            System.out.println("Password too short");
-            ctx.status(400);
-        } else if (acc.getUsername().isEmpty()) {
-            System.out.println("Username cannot be empty");
+        Account addedAcc = accService.registerAcc(acc);
+        if (addedAcc == null) {
             ctx.status(400);
         } else {
-            Account addedAcc = accService.registerAcc(acc);
-            if (addedAcc == null) {
-                ctx.status(400);
-            } else {
-                ctx.json(addedAcc).status(200);
-            }
+            ctx.json(addedAcc).status(200);
         }
     }
 
@@ -87,19 +79,11 @@ public class SocialMediaController {
     private void postMessageHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Message msg = mapper.readValue(ctx.body(), Message.class);
-        if (msg.getMessage_text().isEmpty()) {
-            System.out.println("Message cannot be blank");
-            ctx.status(400);
-        } else if (msg.getMessage_text().length() > 254) {
-            System.out.println("Message has too many characters");
+        Message postedMessage = msgService.addMessage(msg);
+        if (postedMessage == null) {
             ctx.status(400);
         } else {
-            Message postedMessage = msgService.addMessage(msg);
-            if (postedMessage == null) {
-                ctx.status(400);
-            } else {
-                ctx.json(postedMessage).status(200);
-            }
+            ctx.json(postedMessage).status(200);
         }
     }
 
@@ -134,11 +118,10 @@ public class SocialMediaController {
         Message msg = msgService.getMessage(id);
         ObjectMapper mapper = new ObjectMapper();
         Message newMsg = mapper.readValue(ctx.body(), Message.class);
-
-        if (msg == null || newMsg.getMessage_text().isEmpty() || newMsg.getMessage_text().length() > 254) {
+        newMsg = msgService.updateMessage(newMsg, id);
+        if (msg == null || newMsg == null) {
             ctx.status(400);
         } else {
-            msgService.updateMessage(newMsg, id);
             msg = msgService.getMessage(id);
             ctx.json(msg).status(200);
         }

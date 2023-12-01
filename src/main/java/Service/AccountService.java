@@ -15,6 +15,13 @@ public class AccountService {
     }
 
     public Account registerAcc(Account acc) {
+        if (acc.getPassword().length() < 4 ) {
+            System.out.println("Password too short");
+            return null;
+        } else if (acc.getUsername().isEmpty()) {
+            System.out.println("Username cannot be empty");
+            return null;
+        }
         return accDAO.register(acc);
     }
 
